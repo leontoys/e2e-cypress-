@@ -6,15 +6,18 @@
 describe('Blog app', function() {
   beforeEach(function() {
      // empty the db here
-    cy.request('POST', 'http://localhost:3001/api/testing/reset')       
+    //cy.request('POST', 'http://localhost:3001/api/testing/reset')  
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)         
     // create a user for the backend here 
     const user = {      
       name: 'Test User',      
       username: 'testuser',      
       password: 'testpassword'    
     }    
-    cy.request('POST', 'http://localhost:3001/api/users/', user)      
-    cy.visit('http://localhost:5173')
+    //cy.request('POST', 'http://localhost:3001/api/users/', user)    
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)     
+    //cy.visit('http://localhost:5173')
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -58,11 +61,16 @@ describe('Blog app', function() {
 
     describe('and a blog exists', function () {
       beforeEach(function () {
-        cy.contains('new blog').click()
+/*         cy.contains('new blog').click()
         cy.get('#title').type('a new blog created by cypress')     
         cy.get('#author').type('cypress')   
         cy.get('#url').type('www.test.com/blog/cypress')  
-        cy.contains('create').click()
+        cy.contains('create').click() */
+        cy.createBlog({          
+          title: 'another blog cypress',          
+          author: 'cypress',
+          url : 'www.test.com/blog/cypress'       
+        })        
       })
 
       it('it can be liked', function () {
