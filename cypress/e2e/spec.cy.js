@@ -24,6 +24,7 @@ describe('Blog app', function() {
 
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
+      cy.contains('login').click()      
       cy.get('#username').type('testuser')    
       cy.get('#password').type('testpassword')    
       cy.get('#login-button').click()
@@ -34,7 +35,53 @@ describe('Blog app', function() {
       cy.get('#username').type('testuser')    
       cy.get('#password').type('testtest')    
       cy.get('#login-button').click()
-      cy.contains('Test User logged in')
+      cy.get('.error').should('contain', 'wrong') 
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid')    
+      cy.get('html').should('not.contain', 'Test User logged in')        
     })
   })  
+
+/*   describe('When logged in', function() {
+    beforeEach(function() {
+      cy.contains('login').click()      
+      cy.get('#username').type('testuser')    
+      cy.get('#password').type('testpassword')    
+      cy.get('#login-button').click()
+      cy.contains('Test User logged in')    
+    })
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()      
+      cy.get('#title').type('a blog created by cypress')     
+      cy.get('#author').type('author')   
+      cy.get('#url').type('www.test.com/blog/cypress')            
+      cy.contains('create').click()      
+      cy.contains('a blog created by cypress')
+    })
+  })   */
+
+   describe('When logged in', function() {
+    beforeEach(function() {
+
+/*       cy.request('POST', 'http://localhost:3001/api/login', {      
+        username: 'testuser', 
+        password: 'testpassword'    
+      }).then(response => {      
+        localStorage.setItem('loggedBlogappUser', 
+          JSON.stringify(response.body))      
+          cy.visit('http://localhost:5173')    })      
+    }) */
+    cy.login({ username: 'testuser', password: 'testpassword' })
+})
+
+    it('A blog can be created', function() {
+      cy.contains('new blog').click()      
+      cy.get('#title').type('a blog created by cypress')     
+      cy.get('#author').type('author')   
+      cy.get('#url').type('www.test.com/blog/cypress')            
+      cy.contains('create').click()      
+      cy.contains('a blog created by cypress')
+    })
+  })   
 })
