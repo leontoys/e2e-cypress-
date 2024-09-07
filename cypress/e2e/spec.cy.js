@@ -6,7 +6,6 @@
 describe('Blog app', function() {
   beforeEach(function() {
      // empty the db here
-    //cy.request('POST', 'http://localhost:3001/api/testing/reset')  
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)         
     // create a user for the backend here 
     const user = {      
@@ -14,9 +13,7 @@ describe('Blog app', function() {
       username: 'testuser',      
       password: 'testpassword'    
     }    
-    //cy.request('POST', 'http://localhost:3001/api/users/', user)    
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)     
-    //cy.visit('http://localhost:5173')
     cy.visit('')
   })
 
@@ -59,22 +56,20 @@ describe('Blog app', function() {
       cy.contains('a blog created by cypress')
     })
 
-    describe('and a blog exists', function () {
-      beforeEach(function () {
-/*         cy.contains('new blog').click()
-        cy.get('#title').type('a new blog created by cypress')     
-        cy.get('#author').type('cypress')   
-        cy.get('#url').type('www.test.com/blog/cypress')  
-        cy.contains('create').click() */
-        cy.createBlog({          
-          title: 'another blog cypress',          
-          author: 'cypress',
-          url : 'www.test.com/blog/cypress'       
-        })        
-      })
+  }) 
+  
+  describe('When logged in', function() {
+    describe('several blogs exist', function () {
+      beforeEach(function() {
+        cy.login({ username: 'testuser', password: 'testpassword' })
+        cy.createBlog({ title: 'first blog',author: 'cypress',url : 'www.test.com/blog/cypress/1'})  
+        cy.createBlog({ title: 'second blog',author: 'cypress',url : 'www.test.com/blog/cypress/2'}) 
+        cy.createBlog({ title: 'third blog',author: 'cypress',url : 'www.test.com/blog/cypress/3'})            
+    })
 
-      it('it can be liked', function () {
-        // ...
+      it('one of them can be liked', function () {
+        cy.contains('second blog').contains('view').click().parents().contains('like').as('theButton')
+        cy.get('@theButton').click()
       })
     })
 
